@@ -1,0 +1,33 @@
+{
+  "name": "exchange-shared-mailbox-api",
+  "version": "1.0.0",
+  "description": "Exchange Online Shared Mailbox API for Atomicwork - Hosted on Render",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": [
+    "exchange-online",
+    "shared-mailbox",
+    "microsoft365",
+    "atomicwork",
+    "powershell"
+  ],
+  "author": "Atomicwork",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atomicwork/exchange-shared-mailbox-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/atomicwork/exchange-shared-mailbox-api/issues"
+  },
+  "homepage": "https://github.com/atomicwork/exchange-shared-mailbox-api#readme"
+}

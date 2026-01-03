@@ -1,0 +1,23 @@
+# Render Blueprint - render.yaml
+# Deploy with: Connect GitHub repo to Render and it auto-deploys
+
+services:
+  - type: web
+    name: exchange-mailbox-api
+    env: docker
+    plan: starter  # or 'standard' for production
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_KEY
+        sync: false  # Set this in Render dashboard
+      - key: AZURE_CLIENT_ID
+        sync: false  # Set this in Render dashboard  
+      - key: AZURE_TENANT_ID
+        sync: false  # Set this in Render dashboard
+      - key: AZURE_CLIENT_SECRET
+        sync: false  # Set this in Render dashboard
+      - key: EXCHANGE_ORG
+        sync: false  # Set this in Render dashboard (e.g., atombanking.onmicrosoft.com)
