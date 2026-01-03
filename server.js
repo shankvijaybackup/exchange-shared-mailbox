@@ -22,7 +22,8 @@ const API_KEY = process.env.API_KEY || 'atomicwork-secret-key-change-this';
 const CONFIG = {
   clientId: process.env.AZURE_CLIENT_ID || 'your-azure-client-id',
   tenantId: process.env.AZURE_TENANT_ID || 'your-azure-tenant-id',
-  clientSecret: process.env.AZURE_CLIENT_SECRET || 'your-azure-client-secret',
+  certBase64: process.env.AZURE_CERT_BASE64 || '',
+  certPassword: process.env.AZURE_CERT_PASSWORD || '',
   organization: process.env.EXCHANGE_ORG || 'your-organization.onmicrosoft.com'
 };
 
@@ -55,6 +56,7 @@ $result = @{
   error = $null
   logs = @()
 }
+$tempCertPath = $null
 
 try {
     $result.logs += "Importing Exchange Online module..."
@@ -62,11 +64,12 @@ try {
     
     $result.logs += "Connecting to Exchange Online..."
     
-    # Connect using Client Secret (works on Linux)
-    $secureSecret = ConvertTo-SecureString "${CONFIG.clientSecret}" -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential("${CONFIG.clientId}", $secureSecret)
+    # Connect using Certificate
+    $certBytes = [Convert]::FromBase64String("${CONFIG.certBase64}")
+    $tempCertPath = Join-Path $env:TEMP "exchange_cert.pfx"
+    [System.IO.File]::WriteAllBytes($tempCertPath, $certBytes)
     
-    Connect-ExchangeOnline -AppId "${CONFIG.clientId}" -Organization "${CONFIG.organization}" -Credential $credential -ShowBanner:$false -ErrorAction Stop
+    Connect-ExchangeOnline -AppId "${CONFIG.clientId}" -Organization "${CONFIG.organization}" -CertificateFilePath $tempCertPath -CertificatePassword (ConvertTo-SecureString "${CONFIG.certPassword}" -AsPlainText -Force) -ShowBanner:$false -ErrorAction Stop
     
     $result.logs += "Connected successfully!"
     
@@ -82,6 +85,7 @@ catch {
 finally {
     try {
         Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+        if ($tempCertPath -and (Test-Path $tempCertPath)) { Remove-Item $tempCertPath -Force }
         $result.logs += "Disconnected from Exchange Online"
     } catch {}
 }
