@@ -66,7 +66,7 @@ try {
     
     # Connect using Certificate
     $certBytes = [Convert]::FromBase64String("${CONFIG.certBase64}")
-    $tempCertPath = Join-Path $env:TEMP "exchange_cert.pfx"
+    $tempCertPath = "/tmp/exchange_cert.pfx"
     [System.IO.File]::WriteAllBytes($tempCertPath, $certBytes)
     
     Connect-ExchangeOnline -AppId "${CONFIG.clientId}" -Organization "${CONFIG.organization}" -CertificateFilePath $tempCertPath -CertificatePassword (ConvertTo-SecureString "${CONFIG.certPassword}" -AsPlainText -Force) -ShowBanner:$false -ErrorAction Stop
